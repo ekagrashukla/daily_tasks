@@ -1,3 +1,25 @@
+profile
+id name cityid phone createdat updatedat
+1  Pras    1 111    
+
+city
+id name stateid createdat updatedat
+
+
+state
+id name countryid createdat updatedat
+
+
+country
+id name createdat updatedat
+
+
+get query -> filter by countryname, statename, cityname, personname, limit, skip
+return -> personid, personname, phone, city{}, state{}, country{}
+
+-----------------------------------------------------------------------------------------
+
+
 create or replace function res_data(
 	_countryname VARCHAR default null,
 	_statename VARCHAR default null,
