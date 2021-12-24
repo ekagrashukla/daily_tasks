@@ -1,0 +1,42 @@
+create or replace function res_data(
+	_countryname VARCHAR default null,
+	_statename VARCHAR default null,
+	_cityname VARCHAR default null,
+	_profilename VARCHAR default null,
+	_pattern VARCHAR default null
+)
+returns TABLE(
+	personid_ INTEGER,
+	name_ VARCHAR,
+	phone_ INTEGER,
+	city_ VARCHAR,
+	state_ VARCHAR,
+	country_ VARCHAR
+)
+as 
+$$
+declare
+	test record;
+begin
+for test in (select pf.id,pf.profilename,pf.phone,c.cityname,s.statename,co.countryname 
+			 from country co,state s,city c, profile pf 
+			 where co.id=s.countryid and s.id=c.stateid and c.id=pf.cityid
+			and (_cityname is null or c.cityname=_cityname)
+			and (_countryname is null or co.countryname=_countryname)
+			and (_statename is null or s.statename=_statename)
+			 and (_profilename is null or pf.profilename=_profilename)
+			 and pf.profilename like _pattern
+			)
+loop
+	personid_ := test.id;
+	name_ := test.profilename;
+	phone_ := test.phone;
+	city_ := test.cityname;
+	state_ := test.statename;
+	country_ := test.countryname;
+	return next;
+end loop;
+end;
+$$ language plpgsql
+
+select * from res_data('India', 'Uttar Pradesh', 'Delhi','Ekagra','E%') limit 1 offset 0
